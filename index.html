@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GraphLab - Visualizador de algoritmos em grafos</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Barra de navegação superior com marca, algoritmos à esquerda e controles à direita. -->
+  <header>
+    <div class="header-left">
+      <div class="brand">
+        <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="5" cy="6" r="2.5"></circle>
+          <circle cx="19" cy="6" r="2.5"></circle>
+          <circle cx="19" cy="18" r="2.5"></circle>
+          <circle cx="5" cy="18" r="2.5"></circle>
+          <path d="M7.5 6h9M5 8.5v7M19 8.5v7M7.5 18h9M7 7.5l10 9"></path>
+        </svg>
+        <div class="brand-text">
+          <h1>GraphLab</h1>
+          <p>Visualizador educacional de algoritmos em grafos</p>
+        </div>
+      </div>
+
+      <!-- Seleção direta de algoritmos agrupada à esquerda. -->
+      <nav class="algo-nav" aria-label="Seleção de algoritmo">
+        <button class="btn-algo active" data-algo="dijkstra" id="btn-algo-dijkstra">Dijkstra</button>
+        <button class="btn-algo" data-algo="bfs" id="btn-algo-bfs">BFS</button>
+        <button class="btn-algo" data-algo="dfs" id="btn-algo-dfs">DFS</button>
+      </nav>
+    </div>
+
+    <!-- Seletores de topologia pré-configurada e nós de origem e destino. -->
+    <div class="header-right">
+      <div class="header-select-item">
+        <label for="select-preset">Grafo:</label>
+        <select id="select-preset">
+          <option value="default">Rede ponderada (6 vértices)</option>
+          <option value="tree">Árvore hierárquica (7 vértices)</option>
+          <option value="cycles">Bifurcação e ciclos (7 vértices)</option>
+          <option value="city">Malha urbana (8 vértices)</option>
+        </select>
+      </div>
+
+      <div class="header-select-item">
+        <label for="select-source">De:</label>
+        <select id="select-source"></select>
+        <label for="select-target" id="lbl-target">Para:</label>
+        <select id="select-target"></select>
+      </div>
+    </div>
+  </header>
+
+  <!-- Área principal da aplicação com divisão entre lousa e painel informativo. -->
+  <main class="app-main">
+
+    <!-- Seção esquerda contendo a lousa interativa e os botões de execução. -->
+    <section class="left-section">
+      
+      <div class="canvas-wrapper">
+        <!-- Ferramentas flutuantes para centralizar e alternar direcionamento. -->
+        <div class="canvas-toolbar">
+          <button id="btn-center-graph" title="Centralizar o grafo">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            Centralizar
+          </button>
+          <button id="btn-toggle-directed" title="Alternar arestas direcionadas">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <span id="txt-directed-status">Grafo não-direcionado</span>
+          </button>
+        </div>
+
+        <!-- Lousa SVG interativa para renderização e arraste dos vértices. -->
+        <svg id="graph-svg">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="25" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#525252" id="arrow-path"></path>
+            </marker>
+            <marker id="arrow-active" viewBox="0 0 10 10" refX="25" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#ffffff"></path>
+            </marker>
+            <marker id="arrow-path" viewBox="0 0 10 10" refX="25" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"></path>
+            </marker>
+          </defs>
+          <g id="svg-main-group">
+            <g id="edges-layer"></g>
+            <g id="nodes-layer"></g>
+          </g>
+        </svg>
+
+        <!-- Legenda inferior com o significado das cores de cada estado. -->
+        <div class="legend-bar">
+          <div class="legend-item">
+            <div class="legend-dot" style="background-color:#141414; border:1px solid #444444;"></div>
+            <span>Não visitado</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background-color:#271a06; border:1px solid #d97706;"></div>
+            <span>Fronteira</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background-color:#262626; border:1px solid #ffffff;"></div>
+            <span>Vértice ativo</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background-color:#0c2014; border:1px solid #16a34a;"></div>
+            <span>Concluído</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background-color:#2b0b0b; border:1px solid #dc2626;"></div>
+            <span>Caminho mínimo</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de reprodução com controles de passo e velocidade. -->
+      <div class="playbar-container">
+        <div class="playbar-btns">
+          <button id="btn-step-start">Início</button>
+          <button id="btn-step-prev">Voltar</button>
+          <button id="btn-play-pause" class="btn-action-primary">Executar</button>
+          <button id="btn-step-next">Avançar</button>
+          <button id="btn-step-end">Fim</button>
+        </div>
+
+        <div class="progress-container">
+          <div class="progress-meta">
+            <span class="active-action" id="lbl-status-action">Pronto para iniciar</span>
+            <span>Passo: <span id="lbl-step-counter">0 / 0</span></span>
+          </div>
+          <div class="progress-track" id="progress-track">
+            <div class="progress-bar-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="speed-control">
+          <span>Velocidade:</span>
+          <input type="range" id="speed-slider" min="100" max="2000" step="100" value="700">
+          <span id="speed-val" style="min-width: 28px;">1x</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Seção direita com abas de passo a passo, tabela de estados e teoria. -->
+    <aside class="right-section">
+      <!-- Cabeçalho de seleção entre as abas. -->
+      <div class="tab-header">
+        <button class="tab-btn active" data-tab="tab-trace">Passo a passo</button>
+        <button class="tab-btn" data-tab="tab-table">Tabela de estados</button>
+        <button class="tab-btn" data-tab="tab-theory">Teoria e complexidade</button>
+      </div>
+
+      <!-- Aba 1: explicação detalhada do passo a passo e pseudocódigo. -->
+      <div class="tab-content" id="tab-trace">
+        
+        <!-- Descrição textual da ação executada no passo atual. -->
+        <div class="info-section">
+          <div class="info-section-header">
+            <div class="info-section-title">O que está acontecendo?</div>
+            <span class="step-badge" id="card-step-badge">Início</span>
+          </div>
+          <div class="step-narrative" id="card-step-desc">
+            Selecione o algoritmo desejado e clique em Executar ou Avançar para acompanhar o percurso.
+          </div>
+          <div class="step-subtext" id="card-step-detail">
+            Os vértices podem ser reposicionados livremente arrastando com o mouse ou toque sobre a lousa.
+          </div>
+        </div>
+
+        <!-- Estrutura de dados auxiliar ativa (fila, pilha ou min-heap). -->
+        <div class="info-section">
+          <div class="info-section-header">
+            <div class="info-section-title" id="ds-title">Estrutura de dados auxiliar</div>
+            <span class="step-badge" id="ds-count">0 itens</span>
+          </div>
+          <div class="ds-strip" id="ds-items-strip">
+            <span style="font-size: 0.74rem; color: var(--text-dim);">Vazia</span>
+          </div>
+          <p style="font-size: 0.72rem; color: var(--text-dim);" id="ds-hint">
+            BFS usa fila (FIFO). DFS usa pilha (LIFO). Dijkstra usa fila de prioridades (min-heap).
+          </p>
+        </div>
+
+        <!-- Pseudocódigo com destaque sintático estilo Visual Studio Code. -->
+        <div class="info-section" style="border-bottom: none;">
+          <div class="info-section-header" style="margin-bottom: 0.35rem;">
+            <div class="info-section-title">Pseudocódigo em execução</div>
+          </div>
+          <div class="code-box" id="pseudocode-display">
+            <!-- Linhas de código geradas dinamicamente com destaque sintático. -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Aba 2: tabela com os vetores de distâncias e predecessores. -->
+      <div class="tab-content" id="tab-table" style="display: none;">
+        <div class="info-section" style="border-bottom: none;">
+          <div class="info-section-header" style="margin-bottom: 0.35rem;">
+            <div class="info-section-title">Rastreamento de vértices</div>
+          </div>
+          <p style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+            Valores do vetor de distâncias acumuladas d[v], predecessores π[v] e situação no grafo.
+          </p>
+          <div class="trace-table-wrap">
+            <table class="trace-table" id="trace-table">
+              <thead>
+                <tr>
+                  <th>Vértice</th>
+                  <th>Distância d[v]</th>
+                  <th>Predecessor π[v]</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody id="trace-table-body">
+                <!-- Linhas preenchidas dinamicamente a cada etapa. -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aba 3: fundamentos teóricos e análise assintótica de complexidade. -->
+      <div class="tab-content" id="tab-theory" style="display: none;">
+        
+        <div class="info-section">
+          <div class="info-section-header" style="margin-bottom: 0.35rem;">
+            <div class="info-section-title">Análise de complexidade assintótica</div>
+            <span class="step-badge" id="theory-algo-name">Dijkstra</span>
+          </div>
+
+          <div class="complexity-grid">
+            <div class="complexity-box">
+              <div class="complexity-label">Tempo (min-heap)</div>
+              <div class="complexity-val" id="theory-time-val">O((V + E) log V)</div>
+              <div class="complexity-desc" id="theory-time-desc">Com min-heap binário</div>
+            </div>
+            <div class="complexity-box">
+              <div class="complexity-label">Memória / espaço</div>
+              <div class="complexity-val" id="theory-space-val">O(V + E)</div>
+              <div class="complexity-desc" id="theory-space-desc">Lista de adjacência e heap</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section" style="border-bottom: none;">
+          <div class="theory-body" id="theory-details">
+            <!-- Conteúdo teórico preenchido conforme o algoritmo ativo. -->
+          </div>
+          <div class="comparative-box" id="comparative-tip">
+            <!-- Nota didática e recomendações de aplicação. -->
+          </div>
+        </div>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Notificação temporária de ações na interface. -->
+  <div class="toast-msg" id="toast">Notificação</div>
+
+  <!-- Motor lógico da simulação e eventos. -->
+  <script src="script.js"></script>
+</body>
+</html>

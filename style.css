@@ -1,0 +1,1046 @@
+/* Paleta de cores, tipografia e variáveis de estilo global. */
+:root {
+  /* Fundo unificado escuro para eliminar contraste excessivo entre o grafo e as informações laterais */
+  --bg-main: #0b0b0b;
+  --bg-panel: #0b0b0b;
+  --bg-card: #131313;
+  --bg-card-inner: #181818;
+  --bg-hover: #1e1e1e;
+
+  /* Cores das linhas de divisão e bordas sutis */
+  --border-subtle: #1c1c1c;
+  --border-medium: #2a2a2a;
+  --border-strong: #444444;
+
+  /* Escala de tons para textos */
+  --text-white: #ffffff;
+  --text-light: #e5e5e5;
+  --text-muted: #a0a0a0;
+  --text-dim: #707070;
+
+  /* Cores sólidas dos estados dos vértices */
+  --state-unvisited-bg: #141414;
+  --state-unvisited-border: #444444;
+
+  --state-frontier-bg: #271a06;
+  --state-frontier-border: #d97706;
+
+  --state-active-bg: #262626;
+  --state-active-border: #ffffff;
+
+  --state-visited-bg: #0c2014;
+  --state-visited-border: #16a34a;
+
+  --state-path-bg: #2b0b0b;
+  --state-path-border: #dc2626;
+
+  /* Arredondamento sutil quase imperceptível */
+  --radius-subtle: 2px;
+  --radius-tiny: 1px;
+
+  /* Fontes do sistema: Arial ampliada para leitura confortável e Consolas para código */
+  --font-main: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  --font-code: Consolas, "Courier New", monospace;
+}
+
+/* Regras de reset e dimensionamento da página. */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-main);
+  color: var(--text-light);
+  font-family: var(--font-main);
+  font-size: 15px; /* Tamanho base ampliado para leitura agradável */
+  width: 100vw;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ajustes de layout para computadores desktop sem barra de rolagem na janela. */
+@media (min-width: 901px) {
+  html, body {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app-main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 480px;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+  }
+
+  .left-section {
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .right-section {
+    height: 100%;
+    overflow: hidden;
+  }
+}
+
+/* Ajustes de responsividade para celulares e tablets (Android e iOS). */
+@media (max-width: 900px) {
+  html, body {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    font-size: 15px;
+  }
+
+  /* Cabeçalho adaptado com áreas de toque ampliadas */
+  header {
+    height: auto !important;
+    padding: 0.9rem 1rem !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.9rem !important;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: space-between !important;
+    gap: 0.85rem !important;
+    flex-wrap: wrap;
+  }
+
+  .brand-text h1 {
+    font-size: 1.15rem !important;
+  }
+
+  .brand-text p {
+    font-size: 0.82rem !important;
+  }
+
+  .algo-nav {
+    gap: 1.25rem !important;
+  }
+
+  .btn-algo {
+    font-size: 0.98rem !important;
+    padding: 0.4rem 0.2rem !important;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: space-between !important;
+    flex-wrap: wrap;
+    gap: 0.85rem !important;
+  }
+
+  .header-select-item {
+    gap: 0.45rem !important;
+  }
+
+  .header-select-item label {
+    font-size: 0.88rem !important;
+  }
+
+  select {
+    font-size: 0.88rem !important;
+    padding: 0.45rem 0.65rem !important;
+    min-height: 38px;
+  }
+
+  /* Disposição vertical: área do grafo ampliada no topo e informações posicionadas abaixo */
+  .app-main {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    width: 100%;
+  }
+
+  .left-section {
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 2px solid var(--border-medium);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Área do grafo significativamente ampliada no mobile */
+  .canvas-wrapper {
+    height: 58vh !important;
+    min-height: 460px !important;
+    max-height: 640px !important;
+    width: 100%;
+  }
+
+  .canvas-toolbar {
+    top: 0.65rem !important;
+    left: 0.65rem !important;
+  }
+
+  .canvas-toolbar button {
+    padding: 0.4rem 0.7rem !important;
+    font-size: 0.84rem !important;
+  }
+
+  .legend-bar {
+    bottom: 0.65rem !important;
+    left: 0.65rem !important;
+    right: 0.65rem !important;
+    justify-content: center;
+    gap: 0.65rem !important;
+    font-size: 0.8rem !important;
+    padding: 0.4rem 0.65rem !important;
+  }
+
+  /* Barra de reprodução logo abaixo do grafo para controle fácil pelo polegar */
+  .playbar-container {
+    height: auto !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 0.85rem 1rem !important;
+    gap: 0.75rem !important;
+  }
+
+  .playbar-btns {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.4rem;
+  }
+
+  .playbar-btns button {
+    flex: 1;
+    padding: 0.55rem 0.35rem !important;
+    font-size: 0.9rem !important;
+    min-height: 40px;
+  }
+
+  .progress-container {
+    width: 100%;
+  }
+
+  .progress-meta {
+    font-size: 0.85rem !important;
+  }
+
+  .speed-control {
+    width: 100%;
+    justify-content: space-between !important;
+    font-size: 0.85rem !important;
+  }
+
+  .speed-control input[type="range"] {
+    width: 100px !important;
+  }
+
+  /* Painel de informações posicionado integralmente para baixo */
+  .right-section {
+    width: 100%;
+    height: auto !important;
+    overflow: visible !important;
+    background-color: var(--bg-main);
+  }
+
+  .tab-header {
+    position: sticky;
+    top: 0;
+    z-index: 15;
+    background-color: var(--bg-main);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .tab-btn {
+    padding: 0.85rem 0.5rem !important;
+    font-size: 0.95rem !important;
+    min-height: 44px;
+  }
+
+  .tab-content {
+    overflow: visible !important;
+    height: auto !important;
+    padding: 1.25rem 1rem 3.5rem 1rem !important;
+    gap: 1.25rem !important;
+  }
+
+  .code-box {
+    font-size: 0.9rem !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .step-narrative {
+    font-size: 1rem !important;
+  }
+
+  .step-subtext {
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Barra superior de navegação e controles. */
+header {
+  background-color: var(--bg-main);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 1.5rem;
+  height: 56px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-shrink: 0;
+  z-index: 20;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 2.75rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.brand-icon {
+  width: 24px;
+  height: 24px;
+  color: #ffffff;
+  stroke: #ffffff;
+  flex-shrink: 0;
+}
+
+.brand-text h1 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-white);
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+}
+
+.brand-text p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+/* Botões de seleção de algoritmo posicionados à esquerda. */
+.algo-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.btn-algo {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.96rem;
+  font-family: inherit;
+  font-weight: 500;
+  padding: 0.35rem 0.15rem;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  border-radius: 0;
+}
+
+.btn-algo:hover {
+  color: var(--text-white);
+}
+
+.btn-algo.active {
+  color: var(--text-white);
+  font-weight: 600;
+  border-bottom: 2px solid var(--text-white);
+}
+
+/* Seletores de topologia de grafo e vértices na lateral direita. */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.75rem;
+}
+
+.header-select-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.header-select-item label {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+select {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-white);
+  padding: 0.38rem 0.7rem;
+  border-radius: var(--radius-subtle);
+  font-family: inherit;
+  font-size: 0.88rem;
+  outline: none;
+  cursor: pointer;
+}
+
+select:hover {
+  border-color: var(--border-strong);
+}
+
+/* Painel esquerdo contendo a lousa e a barra de reprodução. */
+.left-section {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-main);
+  position: relative;
+}
+
+.canvas-wrapper {
+  flex: 1;
+  position: relative;
+  background-color: var(--bg-main);
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* Barra de ferramentas flutuante da lousa. */
+.canvas-toolbar {
+  position: absolute;
+  top: 0.85rem;
+  left: 0.85rem;
+  display: flex;
+  gap: 0.45rem;
+  z-index: 10;
+  background-color: var(--bg-card);
+  padding: 0.25rem;
+  border-radius: var(--radius-subtle);
+  border: 1px solid var(--border-subtle);
+}
+
+.canvas-toolbar button {
+  padding: 0.35rem 0.65rem;
+  font-size: 0.82rem;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--text-muted);
+  border: 1px solid transparent;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.canvas-toolbar button:hover {
+  color: var(--text-white);
+  background-color: var(--bg-hover);
+}
+
+/* Legenda de estados dos nós e arestas. */
+.legend-bar {
+  position: absolute;
+  bottom: 0.85rem;
+  left: 0.85rem;
+  background-color: var(--bg-card);
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-subtle);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.95rem;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  z-index: 10;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+/* Elementos gráficos do SVG do grafo com preenchimento integral da lousa. */
+#graph-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  user-select: none;
+  background-color: var(--bg-main);
+  touch-action: none;
+}
+
+.edge-line {
+  stroke: #333333;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transition: stroke 0.15s ease, stroke-width 0.15s ease;
+}
+
+.edge-line.evaluated {
+  stroke: #d97706;
+  stroke-width: 3.5;
+}
+
+.edge-line.tree-edge {
+  stroke: #16a34a;
+  stroke-width: 3.5;
+}
+
+.edge-line.path-edge {
+  stroke: #dc2626;
+  stroke-width: 4;
+}
+
+.edge-weight-bg {
+  fill: #141414;
+  stroke: #383838;
+  stroke-width: 1;
+  rx: 1px;
+}
+
+.edge-weight-text {
+  fill: #e5e5e5;
+  font-size: 13px;
+  font-family: var(--font-code);
+  font-weight: 500;
+  text-anchor: middle;
+  dominant-baseline: central;
+  user-select: none;
+}
+
+/* Grupos de vértices e estados de exibição. */
+.node-group {
+  cursor: grab;
+  transition: transform 0.05s linear;
+}
+
+.node-group:active {
+  cursor: grabbing;
+}
+
+.node-circle {
+  stroke-width: 2.5;
+  transition: fill 0.15s ease, stroke 0.15s ease;
+}
+
+.node-label {
+  fill: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  font-family: inherit;
+  text-anchor: middle;
+  dominant-baseline: central;
+  user-select: none;
+  pointer-events: none;
+}
+
+.node-badge {
+  fill: #a0a0a0;
+  font-size: 12px;
+  font-family: var(--font-code);
+  text-anchor: middle;
+  user-select: none;
+  pointer-events: none;
+}
+
+.node-group.state-unvisited .node-circle {
+  fill: var(--state-unvisited-bg);
+  stroke: var(--state-unvisited-border);
+}
+
+.node-group.state-frontier .node-circle {
+  fill: var(--state-frontier-bg);
+  stroke: var(--state-frontier-border);
+}
+
+.node-group.state-active .node-circle {
+  fill: var(--state-active-bg);
+  stroke: var(--state-active-border);
+  stroke-width: 3;
+}
+
+.node-group.state-visited .node-circle {
+  fill: var(--state-visited-bg);
+  stroke: var(--state-visited-border);
+}
+
+.node-group.state-path .node-circle {
+  fill: var(--state-path-bg);
+  stroke: var(--state-path-border);
+  stroke-width: 3.5;
+}
+
+/* Barra de reprodução e controles de passo. */
+.playbar-container {
+  background-color: var(--bg-main);
+  border-top: 1px solid var(--border-subtle);
+  padding: 0.65rem 1.25rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.playbar-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.playbar-btns button {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-light);
+  padding: 0.4rem 0.75rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  border-radius: var(--radius-subtle);
+  cursor: pointer;
+}
+
+.playbar-btns button:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-white);
+  border-color: var(--border-strong);
+}
+
+.playbar-btns button.btn-action-primary {
+  background-color: #15803d;
+  border-color: #16a34a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.playbar-btns button.btn-action-primary:hover {
+  background-color: #16a34a;
+}
+
+.progress-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.progress-meta .active-action {
+  color: var(--text-white);
+  font-weight: 500;
+}
+
+.progress-track {
+  height: 5px;
+  background-color: #1c1c1c;
+  border-radius: var(--radius-tiny);
+  cursor: pointer;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background-color: #16a34a;
+  border-radius: var(--radius-tiny);
+  transition: width 0.15s ease;
+}
+
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.speed-control input[type="range"] {
+  width: 80px;
+  accent-color: #ffffff;
+  cursor: pointer;
+}
+
+/* Painel direito com abas informativas. */
+.right-section {
+  background-color: var(--bg-main);
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-header {
+  display: flex;
+  border-bottom: 1px solid var(--border-subtle);
+  background-color: var(--bg-main);
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 0.75rem 0.6rem;
+  border: none;
+  background-color: transparent;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-family: inherit;
+  font-weight: 400;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-white);
+}
+
+.tab-btn.active {
+  color: var(--text-white);
+  border-bottom-color: var(--text-white);
+  background-color: var(--bg-card);
+  font-weight: 600;
+}
+
+.tab-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.85rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.tab-content::-webkit-scrollbar {
+  width: 5px;
+}
+
+.tab-content::-webkit-scrollbar-thumb {
+  background-color: var(--border-medium);
+  border-radius: var(--radius-tiny);
+}
+
+/* Seções de informação com bordas limpas e discretas. */
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.info-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.info-section-title {
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+/* Indicador de passo e contagem de itens na fonte padrão Arial. */
+.step-badge {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  font-weight: 400;
+  padding: 0;
+  font-family: var(--font-main);
+}
+
+.step-narrative {
+  font-size: 0.96rem;
+  line-height: 1.6;
+  color: var(--text-light);
+}
+
+.step-subtext {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  border-left: 2px solid var(--border-strong);
+  padding-left: 0.6rem;
+  line-height: 1.5;
+}
+
+/* Exibição em linha da estrutura de dados auxiliar. */
+.ds-strip {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 40px;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+}
+
+.ds-item {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-white);
+  border-radius: var(--radius-tiny);
+  padding: 0.3rem 0.65rem;
+  font-size: 0.88rem;
+  font-family: var(--font-code);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+}
+
+.ds-item.highlight-head {
+  border-color: #ffffff;
+  background-color: #262626;
+}
+
+.ds-item .val-badge {
+  background-color: var(--bg-main);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-tiny);
+  color: #e5e5e5;
+  font-size: 0.8rem;
+}
+
+/* Bloco de pseudocódigo no padrão Visual Studio Code com fonte Consolas. */
+.code-box {
+  background-color: #1e1e1e;
+  border: 1px solid #2b2b2b;
+  border-radius: var(--radius-subtle);
+  padding: 0.5rem 0;
+  font-family: var(--font-code);
+  font-size: 0.92rem; /* Tamanho confortável para leitura no estilo editor */
+  line-height: 1.6;
+  max-height: none;
+  overflow: visible;
+}
+
+.code-line {
+  padding: 0.15rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  color: #d4d4d4;
+  white-space: pre;
+}
+
+.code-line .line-num {
+  width: 24px;
+  color: #858585;
+  text-align: right;
+  user-select: none;
+  font-family: var(--font-code);
+  font-size: 0.88rem;
+  flex-shrink: 0;
+}
+
+.code-line.active {
+  background-color: #2a2d2e;
+  border-left: 2px solid #007acc;
+}
+
+.code-line.active .line-num {
+  color: #c6c6c6;
+}
+
+/* Cores de sintaxe do Visual Studio Code Dark+. */
+.tok-kw {
+  color: #569cd6; /* Palavras-chave de declaração */
+}
+
+.tok-ctrl {
+  color: #c586c0; /* Controle de fluxo e estruturas lógicas */
+  font-weight: 500;
+}
+
+.tok-type {
+  color: #4ec9b0; /* Estruturas de dados e classes */
+}
+
+.tok-fn {
+  color: #dcdcaa; /* Funções e métodos */
+}
+
+.tok-var {
+  color: #9cdcfe; /* Variáveis e parâmetros */
+}
+
+.tok-lit {
+  color: #569cd6; /* Literais booleanos, nulos e constantes */
+}
+
+.tok-num {
+  color: #b5cea8; /* Valores numéricos */
+}
+
+.tok-op {
+  color: #d4d4d4; /* Operadores matemáticos e atribuição */
+}
+
+/* Tabela de rastreamento com valores de estado dos nós. */
+.trace-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-subtle);
+  background-color: var(--bg-card);
+}
+
+table.trace-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  font-family: var(--font-code);
+  text-align: left;
+}
+
+table.trace-table th {
+  background-color: #161616;
+  color: var(--text-muted);
+  padding: 0.55rem 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+}
+
+table.trace-table td {
+  padding: 0.45rem 0.85rem;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-light);
+}
+
+table.trace-table tr.active-row {
+  background-color: #222222;
+}
+
+/* Painel de teoria e complexidade assintótica. */
+.complexity-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.complexity-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-subtle);
+  padding: 0.75rem;
+  text-align: center;
+}
+
+.complexity-label {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 0.25rem;
+}
+
+.complexity-val {
+  font-family: var(--font-code);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-white);
+}
+
+.complexity-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  margin-top: 0.25rem;
+}
+
+.theory-body h3 {
+  font-size: 1.05rem;
+  color: var(--text-white);
+  margin: 0.75rem 0 0.4rem 0;
+  font-weight: 600;
+}
+
+.theory-body p, .theory-body ul {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-light);
+  margin-bottom: 0.65rem;
+}
+
+.theory-body ul {
+  padding-left: 1.25rem;
+}
+
+.theory-body li {
+  margin-bottom: 0.35rem;
+}
+
+.math-badge {
+  background-color: var(--bg-card);
+  padding: 0.15rem 0.35rem;
+  border-radius: var(--radius-tiny);
+  font-family: var(--font-code);
+  color: #ffffff;
+  font-size: 0.88em;
+  border: 1px solid var(--border-medium);
+}
+
+.comparative-box {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-subtle);
+  padding: 0.75rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #e5e5e5;
+}
+
+/* Notificação temporária de ações na tela. */
+.toast-msg {
+  position: fixed;
+  bottom: 4.5rem;
+  left: 1rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-medium);
+  color: var(--text-white);
+  padding: 0.65rem 1.15rem;
+  border-radius: var(--radius-subtle);
+  z-index: 100;
+  transform: translateY(30px);
+  transition: all 0.2s ease;
+  font-size: 0.88rem;
+  display: none;
+}
+
+.toast-msg.show {
+  display: block;
+  transform: translateY(0);
+}
